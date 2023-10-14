@@ -54,14 +54,35 @@ public class HangmanGUI {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                hangman.checkLetter(letterInput.getText().toLowerCase());
-                letterInput.setText(""); // Clear the input field
+                handleSubmission();
             }
         });
+
+        letterInput.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleSubmission();
+            }
+        });
+
 
         // Increase the font size of the letterToGuess label
         Font biggerFont = letterToGuess.getFont().deriveFont(Font.PLAIN, 24);
         letterToGuess.setFont(biggerFont);
+    }
+    public void handleSubmission() {
+        if (hangman != null) {
+            String input = letterInput.getText().toLowerCase();
+            if (input.length() == 1 && Character.isLetter(input.charAt(0))) {
+                hangman.checkLetter(input);
+                letterInput.setText(""); // Clear the input field
+            } else {
+                JOptionPane.showMessageDialog(null, "Please enter a single letter.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            // Display a message if "Start" hasn't been pressed yet
+            JOptionPane.showMessageDialog(null, "Press the 'Start' button to begin the game.", "Game Not Started", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
