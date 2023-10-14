@@ -38,7 +38,7 @@ public class HangmanGUI {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                hangman = new Hangman(letterToGuess, imageLabel, imageFileNames);
+                hangman = new Hangman(letterToGuess, imageLabel, imageFileNames, falseLetters);
                 hangman.updateDisplay();
             }
         });

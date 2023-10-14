@@ -31,11 +31,13 @@ class Hangman extends HangmanGUI {
     private JLabel imageLabel;
     private String[] imageFileNames;
     private int incorrectGuesses;
+    private JTextField falseLetters;
 
-    public Hangman(JLabel letterToGuess, JLabel imageLabel, String[] imageFileNames) {
+    public Hangman(JLabel letterToGuess, JLabel imageLabel, String[] imageFileNames, JTextField falseLetters) {
         this.letterToGuess = letterToGuess;
         this.imageLabel = imageLabel;
         this.imageFileNames = imageFileNames;
+        this.falseLetters = falseLetters;
         guessedLetters = new ArrayList<>();
         randomWord = getRandomWord(hangmanWords);
         incorrectGuesses = 0;
@@ -48,27 +50,33 @@ class Hangman extends HangmanGUI {
             if (guessedLetters.contains(letter)) {
                 display.append(letter);
             } else {
-                display.append("_ ");
+                display.append("_");
             }
         }
         letterToGuess.setText(display.toString());
     }
 
     public void checkLetter(String input) {
-        if (input.length() == 1 && Character.isLetter(input.charAt(0)) && !guessedLetters.contains(input.charAt(0))) {
+        if (input.length() == 1 && Character.isLetter(input.charAt(0))) {
             char guessedLetter = input.charAt(0);
-            guessedLetters.add(guessedLetter);
-            updateDisplay();
+            if (guessedLetters.contains(guessedLetter)) {
+                // Letter was already guessed
+                JOptionPane.showMessageDialog(null, "Letter '" + guessedLetter + "' was already entered.", "Letter Already Guessed", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                guessedLetters.add(guessedLetter);
+                updateDisplay();
 
-            if (!randomWord.contains(input)) {
-                incorrectGuesses++;
-                updateHangmanImage();
-            }
+                if (!randomWord.contains(input)) {
+                    incorrectGuesses++;
+                    updateHangmanImage();
+                    addFalseLetter(guessedLetter);
+                }
 
-            if (incorrectGuesses == imageFileNames.length - 1) {
-                // Game lost, handle game over logic here
-                JOptionPane.showMessageDialog(null, "You lost. The word was: " + randomWord, "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                resetGame();
+                if (incorrectGuesses == imageFileNames.length - 1) {
+                    // Game lost, handle game over logic here
+                    JOptionPane.showMessageDialog(null, "You lost. The word was: " + randomWord, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+                    resetGame();
+                }
             }
         }
     }
@@ -100,5 +108,14 @@ class Hangman extends HangmanGUI {
         incorrectGuesses = 0;
         updateDisplay();
         imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
+        falseLetters.setText("");
+    }
+
+    private void addFalseLetter(char letter) {
+        if (falseLetters.getText().isEmpty()) {
+            falseLetters.setText(String.valueOf(letter));
+        } else {
+            falseLetters.setText(falseLetters.getText() + ", " + letter);
+        }
     }
 }
