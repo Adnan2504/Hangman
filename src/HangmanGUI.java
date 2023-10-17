@@ -30,7 +30,6 @@ public class HangmanGUI {
             "HangmanPic/hangman10.png"
     };
 
-
     public HangmanGUI() {
         imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
 

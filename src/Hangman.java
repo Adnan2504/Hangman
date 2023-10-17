@@ -74,7 +74,6 @@ class Hangman {
         }
     }
 
-
     public boolean hasWon() {
         for (int i = 0; i < randomWord.length(); i++) {
             if (!guessedLetters.contains(randomWord.charAt(i))) {
@@ -87,7 +86,6 @@ class Hangman {
     public boolean isGameLost() {
         return incorrectGuesses >= imageFileNames.length;
     }
-
 
     public boolean isLetterTried(char letter) {
         return guessedLetters.contains(letter);
@@ -104,7 +102,6 @@ class Hangman {
         updateDisplay();
         falseLetters.setText("");
     }
-
 
     private void addFalseLetter(char letter) {
         if (falseLetters.getText().isEmpty()) {
@@ -137,6 +134,4 @@ class Hangman {
     public void clearHistory() {
         history.clear();
     }
-
-
 }
