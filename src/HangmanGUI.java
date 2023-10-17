@@ -2,9 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Random;
-
 
 public class HangmanGUI {
     public JPanel playingField;
@@ -30,7 +27,6 @@ public class HangmanGUI {
             "HangmanPic/hangman9.png",
             "HangmanPic/hangman10.png"
     };
-    private int currentImageIndex = 0;
 
     public HangmanGUI() {
         imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
@@ -39,7 +35,9 @@ public class HangmanGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 hangman = new Hangman(letterToGuess, imageLabel, imageFileNames, falseLetters);
+                hangman.resetGame();
                 hangman.updateDisplay();
+                imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
             }
         });
 
@@ -65,22 +63,43 @@ public class HangmanGUI {
             }
         });
 
-
-        // Increase the font size of the letterToGuess label
         Font biggerFont = letterToGuess.getFont().deriveFont(Font.PLAIN, 24);
         letterToGuess.setFont(biggerFont);
     }
+
     public void handleSubmission() {
         if (hangman != null) {
             String input = letterInput.getText().toLowerCase();
-            if (input.length() == 1 && Character.isLetter(input.charAt(0))) {
+            if (input.length() == 1 && Character.isLetter(input.charAt(0)) && !hangman.isLetterTried(input.charAt(0))) {
                 hangman.checkLetter(input);
-                letterInput.setText(""); // Clear the input field
+
+                if (hangman.hasWon()) {
+                    int option = JOptionPane.showConfirmDialog(null, "Congratulations! You've guessed the word: " + hangman.getRandomWord() + "\nDo you want to restart?", "You Win!", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (option == JOptionPane.YES_OPTION) {
+                        hangman.resetGame();
+                        letterInput.setText("");
+                        imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
+                    }
+                }
+
+                if (hangman.isGameLost()) {
+                    int option = JOptionPane.showConfirmDialog(null, "You lost. The word was: " + hangman.getRandomWord() + "\nDo you want to restart?", "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (option == JOptionPane.YES_OPTION) {
+                        hangman.resetGame();
+                        letterInput.setText("");
+                        imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
+                    }
+                }
+
+                letterInput.setText("");
             } else {
-                JOptionPane.showMessageDialog(null, "Please enter a single letter.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                if (!hangman.isLetterTried(input.charAt(0))) {
+                    JOptionPane.showMessageDialog(null, "Please enter a single letter.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Letter '" + input + "' was already entered.", "Letter Already Guessed", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else {
-            // Display a message if "Start" hasn't been pressed yet
             JOptionPane.showMessageDialog(null, "Press the 'Start' button to begin the game.", "Game Not Started", JOptionPane.INFORMATION_MESSAGE);
         }
     }

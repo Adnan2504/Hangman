@@ -1,9 +1,8 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-class Hangman extends HangmanGUI {
+class Hangman {
     private String[] hangmanWords = {
             "computer",
             "programming",
@@ -30,8 +29,8 @@ class Hangman extends HangmanGUI {
     private JLabel letterToGuess;
     private JLabel imageLabel;
     private String[] imageFileNames;
-    private int incorrectGuesses;
     private JTextField falseLetters;
+    private int incorrectGuesses;
 
     public Hangman(JLabel letterToGuess, JLabel imageLabel, String[] imageFileNames, JTextField falseLetters) {
         this.letterToGuess = letterToGuess;
@@ -39,8 +38,7 @@ class Hangman extends HangmanGUI {
         this.imageFileNames = imageFileNames;
         this.falseLetters = falseLetters;
         guessedLetters = new ArrayList<>();
-        randomWord = getRandomWord(hangmanWords);
-        incorrectGuesses = 0;
+        resetGame();
     }
 
     public void updateDisplay() {
@@ -57,31 +55,21 @@ class Hangman extends HangmanGUI {
     }
 
     public void checkLetter(String input) {
-        if (input.length() == 1 && Character.isLetter(input.charAt(0))) {
+        if (input.length() == 1 && Character.isLetter(input.charAt(0)) && !isLetterTried(input.charAt(0))) {
             char guessedLetter = input.charAt(0);
-            if (guessedLetters.contains(guessedLetter)) {
-                // Letter was already guessed
-                JOptionPane.showMessageDialog(null, "Letter '" + guessedLetter + "' was already entered.", "Letter Already Guessed", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                guessedLetters.add(guessedLetter);
-                updateDisplay();
+            guessedLetters.add(guessedLetter);
+            updateDisplay();
 
-                if (!randomWord.contains(input)) {
-                    incorrectGuesses++;
-                    updateHangmanImage();
-                    addFalseLetter(guessedLetter);
-                }
-
-                if (incorrectGuesses == imageFileNames.length - 1) {
-                    // Game lost, handle game over logic here
-                    JOptionPane.showMessageDialog(null, "You lost. The word was: " + randomWord, "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                    resetGame();
-                }
+            if (!randomWord.contains(input)) {
+                addFalseLetter(guessedLetter);
+                updateHangmanImage();
+                incorrectGuesses++;
             }
         }
     }
 
-    private boolean hasWon() {
+
+    public boolean hasWon() {
         for (int i = 0; i < randomWord.length(); i++) {
             if (!guessedLetters.contains(randomWord.charAt(i))) {
                 return false;
@@ -90,26 +78,27 @@ class Hangman extends HangmanGUI {
         return true;
     }
 
-    public static String getRandomWord(String[] words) {
-        Random random = new Random();
-        int randomIndex = random.nextInt(words.length);
-        return words[randomIndex];
+    public boolean isGameLost() {
+        return incorrectGuesses >= imageFileNames.length;
     }
 
-    private void updateHangmanImage() {
-        if (incorrectGuesses < imageFileNames.length) {
-            imageLabel.setIcon(new ImageIcon(imageFileNames[incorrectGuesses]));
-        }
+
+    public boolean isLetterTried(char letter) {
+        return guessedLetters.contains(letter);
     }
 
-    private void resetGame() {
+    public String getRandomWord() {
+        return randomWord;
+    }
+
+    public void resetGame() {
         randomWord = getRandomWord(hangmanWords);
         guessedLetters.clear();
         incorrectGuesses = 0;
         updateDisplay();
-        imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
         falseLetters.setText("");
     }
+
 
     private void addFalseLetter(char letter) {
         if (falseLetters.getText().isEmpty()) {
@@ -118,4 +107,19 @@ class Hangman extends HangmanGUI {
             falseLetters.setText(falseLetters.getText() + ", " + letter);
         }
     }
+
+    public String getRandomWord(String[] words) {
+        Random random = new Random();
+        int randomIndex = random.nextInt(words.length);
+        return words[randomIndex];
+    }
+
+    private void updateHangmanImage() {
+        if (incorrectGuesses >= 0 && incorrectGuesses < imageFileNames.length) {
+            imageLabel.setIcon(new ImageIcon(imageFileNames[incorrectGuesses]));
+        }
+    }
+
+
+
 }
