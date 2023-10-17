@@ -14,7 +14,7 @@ public class HangmanGUI {
     public JTextField falseLetters;
     public JButton submitButton;
     public JLabel letterToGuess;
-
+    private JCheckBoxMenuItem showHistoryMenuItem;
     private Hangman hangman;
 
     private final String[] imageFileNames = {
@@ -30,7 +30,6 @@ public class HangmanGUI {
             "HangmanPic/hangman10.png"
     };
 
-    private JCheckBoxMenuItem showHistoryMenuItem;
 
     public HangmanGUI() {
         imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
@@ -121,8 +120,13 @@ public class HangmanGUI {
 
                 letterInput.setText("");
             } else {
+                if (input.isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Input can't be null or empty", "Invalid Input", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                };
                 if (!hangman.isLetterTried(input.charAt(0))) {
-                    JOptionPane.showMessageDialog(null, "Please enter a single letter.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Please enter a valid letter.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    letterInput.setText("");
                 } else {
                     JOptionPane.showMessageDialog(null, "Letter '" + input + "' was already entered.", "Letter Already Guessed", JOptionPane.ERROR_MESSAGE);
                 }

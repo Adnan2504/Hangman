@@ -25,6 +25,7 @@ class Hangman {
             "polymorphism",
             "inheritance"
     };
+
     private ArrayList<Character> guessedLetters;
     private String randomWord;
     private JLabel letterToGuess;
@@ -32,7 +33,6 @@ class Hangman {
     private String[] imageFileNames;
     private JTextField falseLetters;
     private int incorrectGuesses;
-
     private List<Character> history;
 
     public Hangman(JLabel letterToGuess, JLabel imageLabel, String[] imageFileNames, JTextField falseLetters) {
@@ -52,7 +52,7 @@ class Hangman {
             if (guessedLetters.contains(letter)) {
                 display.append(letter);
             } else {
-                display.append("_");
+                display.append("_ ");
             }
         }
         letterToGuess.setText(display.toString());
@@ -69,6 +69,8 @@ class Hangman {
                 updateHangmanImage();
                 incorrectGuesses++;
             }
+        }else{
+            JOptionPane.showMessageDialog(null, "Input can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
     }
 
