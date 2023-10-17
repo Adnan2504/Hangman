@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 class Hangman {
@@ -32,12 +33,15 @@ class Hangman {
     private JTextField falseLetters;
     private int incorrectGuesses;
 
+    private List<Character> history;
+
     public Hangman(JLabel letterToGuess, JLabel imageLabel, String[] imageFileNames, JTextField falseLetters) {
         this.letterToGuess = letterToGuess;
         this.imageLabel = imageLabel;
         this.imageFileNames = imageFileNames;
         this.falseLetters = falseLetters;
         guessedLetters = new ArrayList<>();
+        history = new ArrayList<>();
         resetGame();
     }
 
@@ -120,6 +124,17 @@ class Hangman {
         }
     }
 
+    public void showHistory() {
+        StringBuilder historyStr = new StringBuilder("Guessed letters history: ");
+        for (Character letter : history) {
+            historyStr.append(letter).append(", ");
+        }
+        JOptionPane.showMessageDialog(null, historyStr.toString(), "Guessed Letters History", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void clearHistory() {
+        history.clear();
+    }
 
 
 }

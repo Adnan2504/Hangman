@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 public class HangmanGUI {
     public JPanel playingField;
@@ -27,6 +29,8 @@ public class HangmanGUI {
             "HangmanPic/hangman9.png",
             "HangmanPic/hangman10.png"
     };
+
+    private JCheckBoxMenuItem showHistoryMenuItem;
 
     public HangmanGUI() {
         imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
@@ -63,8 +67,32 @@ public class HangmanGUI {
             }
         });
 
+        showHistoryMenuItem = new JCheckBoxMenuItem("Show History");
+        showHistoryMenuItem.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    falseLetters.setVisible(true);
+                }else {
+                    falseLetters.setVisible(false);
+                }
+            }
+        });
+
         Font biggerFont = letterToGuess.getFont().deriveFont(Font.PLAIN, 24);
         letterToGuess.setFont(biggerFont);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Game");
+        menu.add(showHistoryMenuItem);
+        menuBar.add(menu);
+
+        JFrame frame = new JFrame("Hangman Game");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(playingField);
+        frame.setJMenuBar(menuBar);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     public void handleSubmission() {
@@ -106,12 +134,7 @@ public class HangmanGUI {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Hangman Game");
-            HangmanGUI hangmanGUI = new HangmanGUI();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.getContentPane().add(hangmanGUI.playingField);
-            frame.pack();
-            frame.setVisible(true);
+            new HangmanGUI();
         });
     }
 }
