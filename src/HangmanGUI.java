@@ -14,7 +14,8 @@ public class HangmanGUI {
     public JTextField falseLetters;
     public JButton submitButton;
     public JLabel letterToGuess;
-    private JCheckBoxMenuItem showHistoryMenuItem;
+    public JCheckBoxMenuItem showHistoryMenuItem;
+    public JMenuItem startingLevel;
     private Hangman hangman;
 
     private final String[] imageFileNames = {
@@ -66,6 +67,7 @@ public class HangmanGUI {
         });
 
         showHistoryMenuItem = new JCheckBoxMenuItem("Show History");
+
         showHistoryMenuItem.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -77,12 +79,24 @@ public class HangmanGUI {
             }
         });
 
+        startingLevel = new JMenuItem("Starting Level");
+        startingLevel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String startlvl = JOptionPane.showInputDialog(playingField,"Enter starting level:");
+                int lvl = Integer.valueOf(startlvl);
+                imageLabel.setIcon(new ImageIcon(imageFileNames[lvl]));
+
+            }
+        });
+
         Font biggerFont = letterToGuess.getFont().deriveFont(Font.PLAIN, 24);
         letterToGuess.setFont(biggerFont);
 
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Game");
         menu.add(showHistoryMenuItem);
+        menu.add(startingLevel);
         menuBar.add(menu);
 
         JFrame frame = new JFrame("Hangman Game");
@@ -118,6 +132,7 @@ public class HangmanGUI {
                 }
 
                 letterInput.setText("");
+
             } else {
                 if (input.isEmpty()){
                     JOptionPane.showMessageDialog(null, "Input can't be null or empty", "Invalid Input", JOptionPane.INFORMATION_MESSAGE);
