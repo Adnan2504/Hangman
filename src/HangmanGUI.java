@@ -4,6 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class HangmanGUI {
     public JPanel playingField;
@@ -37,7 +43,8 @@ public class HangmanGUI {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                hangman = new Hangman(letterToGuess, imageLabel, imageFileNames, falseLetters);
+                List<String> words = readWordsFromFile("Words/wordsForHangman.txt");
+                hangman = new Hangman(letterToGuess, imageLabel, imageFileNames, falseLetters, words);
                 hangman.resetGame();
                 hangman.updateDisplay();
                 imageLabel.setIcon(new ImageIcon(imageFileNames[0]));
@@ -67,13 +74,14 @@ public class HangmanGUI {
         });
 
         showHistoryMenuItem = new JCheckBoxMenuItem("Show History");
+        showHistoryMenuItem.setSelected(true);
 
         showHistoryMenuItem.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     falseLetters.setVisible(true);
-                }else {
+                } else {
                     falseLetters.setVisible(false);
                 }
             }
@@ -83,10 +91,9 @@ public class HangmanGUI {
         startingLevel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String startlvl = JOptionPane.showInputDialog(playingField,"Enter starting level:");
+                String startlvl = JOptionPane.showInputDialog(playingField, "Enter starting level:");
                 int lvl = Integer.valueOf(startlvl);
                 imageLabel.setIcon(new ImageIcon(imageFileNames[lvl]));
-
             }
         });
 
@@ -132,12 +139,12 @@ public class HangmanGUI {
                 }
 
                 letterInput.setText("");
-
             } else {
-                if (input.isEmpty()){
+                if (input.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Input can't be null or empty", "Invalid Input", JOptionPane.INFORMATION_MESSAGE);
                     return;
-                };
+                }
+                ;
                 if (!hangman.isLetterTried(input.charAt(0))) {
                     JOptionPane.showMessageDialog(null, "Please enter a valid letter.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                     letterInput.setText("");
@@ -148,6 +155,19 @@ public class HangmanGUI {
         } else {
             JOptionPane.showMessageDialog(null, "Press the 'Start' button to begin the game.", "Game Not Started", JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    public static List<String> readWordsFromFile(String fileName) {
+        List<String> words = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                words.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return words;
     }
 
     public static void main(String[] args) {

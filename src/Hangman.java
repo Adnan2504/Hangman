@@ -1,31 +1,10 @@
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
-class Hangman {
-    private String[] hangmanWords = {
-            "computer",
-            "programming",
-            "java",
-            "hangman",
-            "developer",
-            "algorithm",
-            "debugging",
-            "variable",
-            "interface",
-            "exception",
-            "application",
-            "framework",
-            "iteration",
-            "database",
-            "authentication",
-            "encryption",
-            "repository",
-            "polymorphism",
-            "inheritance"
-    };
-
+public class Hangman {
+    private List<String> hangmanWords;
     private ArrayList<Character> guessedLetters;
     private String randomWord;
     private JLabel letterToGuess;
@@ -35,11 +14,12 @@ class Hangman {
     private int incorrectGuesses;
     private List<Character> history;
 
-    public Hangman(JLabel letterToGuess, JLabel imageLabel, String[] imageFileNames, JTextField falseLetters) {
+    public Hangman(JLabel letterToGuess, JLabel imageLabel, String[] imageFileNames, JTextField falseLetters, List<String> words) {
         this.letterToGuess = letterToGuess;
         this.imageLabel = imageLabel;
         this.imageFileNames = imageFileNames;
         this.falseLetters = falseLetters;
+        hangmanWords = words;
         guessedLetters = new ArrayList<>();
         history = new ArrayList<>();
         resetGame();
@@ -69,7 +49,7 @@ class Hangman {
                 updateHangmanImage();
                 incorrectGuesses++;
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Input can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -98,10 +78,12 @@ class Hangman {
     public void resetGame() {
         randomWord = getRandomWord(hangmanWords);
         guessedLetters.clear();
-        incorrectGuesses = 0;
+        incorrectGuesses = 1;
+        imageLabel.setIcon(new ImageIcon(imageFileNames[incorrectGuesses + 1]));
         updateDisplay();
         falseLetters.setText("");
     }
+
 
     private void addFalseLetter(char letter) {
         if (falseLetters.getText().isEmpty()) {
@@ -111,14 +93,14 @@ class Hangman {
         }
     }
 
-    public String getRandomWord(String[] words) {
+    public String getRandomWord(List<String> words) {
         Random random = new Random();
-        int randomIndex = random.nextInt(words.length);
-        return words[randomIndex];
+        int randomIndex = random.nextInt(words.size());
+        return words.get(randomIndex);
     }
 
     private void updateHangmanImage() {
-        if (incorrectGuesses >= 0 && incorrectGuesses < imageFileNames.length) {
+        if (incorrectGuesses >= 0 && incorrectGuesses <= imageFileNames.length) {
             imageLabel.setIcon(new ImageIcon(imageFileNames[incorrectGuesses]));
         }
     }
