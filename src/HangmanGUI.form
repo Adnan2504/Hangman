@@ -49,6 +49,7 @@
           </grid>
         </constraints>
         <properties>
+          <editable value="false"/>
           <font name="Unispace" size="16"/>
           <text value=""/>
         </properties>

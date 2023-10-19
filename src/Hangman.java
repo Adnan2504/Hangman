@@ -84,7 +84,6 @@ public class Hangman {
         falseLetters.setText("");
     }
 
-
     private void addFalseLetter(char letter) {
         if (falseLetters.getText().isEmpty()) {
             falseLetters.setText(String.valueOf(letter));
