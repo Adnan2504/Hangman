@@ -9,7 +9,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class HangmanGUI {
     public JPanel playingField;
@@ -92,10 +91,16 @@ public class HangmanGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String startlvl = JOptionPane.showInputDialog(playingField, "Enter starting level:");
-                int lvl = Integer.valueOf(startlvl);
-                imageLabel.setIcon(new ImageIcon(imageFileNames[lvl]));
+                try {
+                    int level = Integer.parseInt(startlvl);
+                    hangman.setCurrentLevel(level);
+                    hangman.updateHangmanImage();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(playingField, "Invalid input for starting level.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
+
 
         Font biggerFont = letterToGuess.getFont().deriveFont(Font.PLAIN, 24);
         letterToGuess.setFont(biggerFont);

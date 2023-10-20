@@ -13,6 +13,7 @@ public class Hangman {
     private JTextField falseLetters;
     private int incorrectGuesses;
     private List<Character> history;
+    private int currentLevel = 0;
 
     public Hangman(JLabel letterToGuess, JLabel imageLabel, String[] imageFileNames, JTextField falseLetters, List<String> words) {
         this.letterToGuess = letterToGuess;
@@ -46,8 +47,9 @@ public class Hangman {
 
             if (!randomWord.contains(input)) {
                 addFalseLetter(guessedLetter);
-                updateHangmanImage();
                 incorrectGuesses++;
+                currentLevel++;
+                updateHangmanImage();
             }
         } else {
             JOptionPane.showMessageDialog(null, "Input can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
@@ -64,7 +66,7 @@ public class Hangman {
     }
 
     public boolean isGameLost() {
-        return incorrectGuesses >= imageFileNames.length;
+        return incorrectGuesses >= 9;
     }
 
     public boolean isLetterTried(char letter) {
@@ -78,8 +80,8 @@ public class Hangman {
     public void resetGame() {
         randomWord = getRandomWord(hangmanWords);
         guessedLetters.clear();
-        incorrectGuesses = 1;
-        imageLabel.setIcon(new ImageIcon(imageFileNames[incorrectGuesses + 1]));
+        incorrectGuesses = 0;
+        imageLabel.setIcon(new ImageIcon(imageFileNames[incorrectGuesses]));
         updateDisplay();
         falseLetters.setText("");
     }
@@ -98,8 +100,8 @@ public class Hangman {
         return words.get(randomIndex);
     }
 
-    private void updateHangmanImage() {
-        if (incorrectGuesses >= 0 && incorrectGuesses <= imageFileNames.length) {
+    public void updateHangmanImage() {
+        if (incorrectGuesses >= 0 && incorrectGuesses < imageFileNames.length) {
             imageLabel.setIcon(new ImageIcon(imageFileNames[incorrectGuesses]));
         }
     }
@@ -111,6 +113,14 @@ public class Hangman {
         }
         JOptionPane.showMessageDialog(null, historyStr.toString(), "Guessed Letters History", JOptionPane.INFORMATION_MESSAGE);
     }
+
+    public void setCurrentLevel(int level) {
+        if (level >= 0 && level < imageFileNames.length) {
+            currentLevel = level;
+            incorrectGuesses = level;
+        }
+    }
+
 
     public void clearHistory() {
         history.clear();
